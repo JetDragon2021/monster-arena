@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://btkr5v6rhj8hg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(1152, 64)
+
+[node name="Arena" type="Node2D"]
+
+[node name="Boundaries" type="StaticBody2D" parent="."]
+
+[node name="TopWall" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(576, 0)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="BottomWall" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(576, 648)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="LeftWall" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(0, 324)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_1")
+
+[node name="RightWall" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(1152, 324)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_1")
