@@ -8,9 +8,9 @@ extends CharacterBody2D
 @export var dodge_cooldown = 1.0  # Cooldown between dodges
 
 @export var max_health: int = 100
-@export var attack_damage: int = 20  # Increased damage
-@export var attack_range: float = 200.0  # Increased attack range
-@export var chase_range: float = 500.0  # Increased chase range
+@export var attack_damage: int = 10  # Reduced damage from 20 to 10
+@export var attack_range: float = 250.0  # Increased attack range
+@export var chase_range: float = 400.0  # Slightly increased chase range
 
 var health: int = max_health
 
@@ -29,8 +29,8 @@ var attack_cooldown: float = 1.5  # Increased cooldown for more strategic attack
 # Ability cooldowns
 var ability_cooldowns: Dictionary = {}
 
-@onready var health_bar = $HealthBar
-@onready var health_label = $HealthBar/HealthLabel
+@onready var health_bar = $EnemyHealthBar
+@onready var health_label = $EnemyHealthBar/EnemyHealthLabel
 @onready var attack_area = $AttackArea
 @onready var detection_area = $DetectionArea
 
@@ -56,7 +56,7 @@ func _ready():
 	attack_area.connect("body_exited", Callable(self, "_on_attack_area_body_exited"))
 	
 	# Print attack area collision shape details
-	var attack_area_shape = $AttackArea/CollisionShape2D
+	var attack_area_shape = $AttackArea/EnemyAttackAreaCollisionShape
 	print("Attack Area Position: ", attack_area_shape.position)
 	print("Attack Area Scale: ", attack_area_shape.scale)
 
@@ -66,8 +66,21 @@ func update_cooldowns(delta):
 			ability_cooldowns[ability] -= delta
 
 func update_health_display():
-	health_bar.value = health
-	health_label.text = "%d / %d" % [health, max_health]
+	print("Updating Health Display")
+	print("Health: ", health)
+	print("Max Health: ", max_health)
+	
+	if health_bar:
+		health_bar.value = health
+		print("Health Bar Value Set To: ", health_bar.value)
+	else:
+		print("ERROR: Health Bar Not Found!")
+	
+	if health_label:
+		health_label.text = "%d / %d" % [health, max_health]
+		print("Health Label Text Set To: ", health_label.text)
+	else:
+		print("ERROR: Health Label Not Found!")
 
 func _physics_process(delta):
 	# Update ability cooldowns
@@ -100,9 +113,13 @@ func _physics_process(delta):
 					print("Attempting to attack!")
 					attack()
 			elif distance_to_target <= chase_range:
-				# Chase the target more aggressively
+				# Chase the target, but not directly into them
 				var direction_to_target = (target.global_position - global_position).normalized()
-				velocity = direction_to_target * speed  # Full speed chase
+				var approach_velocity = direction_to_target * speed * 0.7  # Slower approach
+				
+				# Slight zigzag to make movement less predictable
+				var zigzag_offset = Vector2(sin(Time.get_ticks_msec() * 0.01), cos(Time.get_ticks_msec() * 0.01)) * 50
+				velocity = approach_velocity + zigzag_offset
 				
 				# Try to dodge if close and health is low
 				if distance_to_target < 150 and health < max_health / 2:
