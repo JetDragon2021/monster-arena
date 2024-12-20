@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cssq77rxkvmx"]
+[gd_scene load_steps=5 format=3 uid="uid://b2yri7k0klbu8"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_x8nqk"]
 [ext_resource type="Texture2D" uid="uid://dijw6tku1yt3l" path="res://icon.svg" id="2_qx7yx"]
@@ -9,7 +9,7 @@ size = Vector2(120.208, 123.207)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
 size = Vector2(73.5938, 100)
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" groups=["player"]]
 scale = Vector2(1.07615, 0.82024)
 script = ExtResource("1_x8nqk")
 metadata/_edit_group_ = true
@@ -19,12 +19,31 @@ texture = ExtResource("2_qx7yx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-2.5, -0.763812)
-scale = Vector2(1.0565, 1.04274)
+scale = Vector2(1.09397, 1.04274)
 shape = SubResource("RectangleShape2D_1")
 
 [node name="AttackArea" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
 position = Vector2(-0.800012, -3)
 scale = Vector2(2.56, 2.16)
 shape = SubResource("RectangleShape2D_2")
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -62.0
+offset_top = -40.0
+offset_right = 62.0
+offset_bottom = -30.0
+value = 100.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="HealthBar"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = -1.0
+offset_right = 124.0
+offset_bottom = 22.0
+text = "100 / 100"
+horizontal_alignment = 1
