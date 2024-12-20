@@ -25,6 +25,8 @@ var dodge_direction = Vector2.ZERO
 
 @onready var attack_area = $AttackArea
 @onready var camera = $Camera2D
+@onready var health_bar = $HealthBar
+@onready var health_label = $HealthBar/HealthLabel
 
 func _ready():
 	# Initialize ability cooldowns
@@ -43,6 +45,10 @@ func _ready():
 		"berserk": 0,
 		"time_warp": 0
 	}
+	
+	# Initialize health bar
+	health_bar.max_value = max_health
+	update_health_display()
 
 func _physics_process(delta):
 	# Dodge logic
@@ -66,8 +72,14 @@ func _physics_process(delta):
 		else:
 			velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 	
-	# Move the character
-	move_and_slide()
+	# Move the character and handle collisions
+	var collision = move_and_collide(velocity * delta)
+	
+	# If collision occurs with an enemy, stop movement
+	if collision:
+		var collider = collision.get_collider()
+		if collider.is_in_group("enemy"):
+			velocity = Vector2.ZERO
 	
 	# Smooth camera tracking
 	if camera:
@@ -94,17 +106,18 @@ func dodge():
 	if ability_cooldowns["dodge"] > 0 or is_dodging:
 		return
 	
-	# Get movement direction for dodge
+	# Dodge in input direction
 	var input_vector = Vector2.ZERO
 	input_vector.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	input_vector.y = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
 	
-	# If no movement input, dodge in last movement direction or forward
+	# If no input, dodge in last movement direction
 	if input_vector == Vector2.ZERO:
-		input_vector = Vector2.RIGHT  # Default dodge direction
+		input_vector = velocity.normalized()
 	
-	dodge_direction = input_vector.normalized()
+	dodge_direction = input_vector
 	is_dodging = true
+	dodge_timer = 0.0
 	ability_cooldowns["dodge"] = dodge_cooldown
 
 # Basic attack ability
@@ -122,15 +135,44 @@ func attack():
 	ability_cooldowns["attack"] = 0.5  # Half-second cooldown
 
 func take_damage(amount: int):
-	if is_dodging:
-		return  # Invincible during dodge
+	print("PLAYER TAKE DAMAGE CALLED!")
+	print("Current Health Before Damage: ", health)
+	print("Damage Amount: ", amount)
 	
 	health -= amount
+	print("Current Health After Damage: ", health)
+	
+	# Update health display
+	update_health_display()
+	
+	# Check for death
 	if health <= 0:
+		print("PLAYER DIED!")
 		die()
+	
+	return true
+
+func update_health_display():
+	print("Updating Health Display")
+	print("Health: ", health)
+	print("Max Health: ", max_health)
+	
+	if health_bar:
+		health_bar.value = health
+		print("Health Bar Value Set To: ", health_bar.value)
+	else:
+		print("ERROR: Health Bar Not Found!")
+	
+	if health_label:
+		health_label.text = "%d / %d" % [health, max_health]
+		print("Health Label Text Set To: ", health_label.text)
+	else:
+		print("ERROR: Health Label Not Found!")
 
 func die():
-	queue_free()
+	print("PLAYER DIE METHOD CALLED!")
+	health = max_health
+	update_health_display()
 
 # Universal Abilities
 func clone():
@@ -143,6 +185,7 @@ func heal(amount: int = 20):
 	if ability_cooldowns["heal"] > 0:
 		return
 	health = min(health + amount, max_health)
+	update_health_display()
 	ability_cooldowns["heal"] = 5.0  # 5-second cooldown
 
 func rage():
@@ -198,3 +241,13 @@ func time_warp():
 		return
 	# TODO: Implement time warp (reset all cooldowns)
 	ability_cooldowns["time_warp"] = 60.0  # 1-minute cooldown
+
+func trigger_enemy_attack():
+	# Find all enemies in the scene and force them to attack
+	var enemies = get_tree().get_nodes_in_group("enemy")
+	print("Triggering attack for enemies: ", enemies)
+	
+	for enemy in enemies:
+		if enemy.has_method("attack"):
+			print("Forcing enemy attack!")
+			enemy.attack()

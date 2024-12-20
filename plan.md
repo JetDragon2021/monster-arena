@@ -8,7 +8,7 @@
 
 ### 1.2 Initial Mechanics
 - [x] Implement basic attack system
-- [ ] Create simple dodge mechanics
+- [x] Create simple dodge mechanics
 - [ ] Add health and damage system
 
 ## Phase 2: Monster Design (2-3 weeks)
@@ -65,7 +65,6 @@
 - Maximum: 10-12 weeks
 
 ## Simplified Scope Considerations
-- Reduce monster count from 6 to 3
 - Minimize complex mechanics
 - Focus on core gameplay loop
 - Prioritize fun and playability over complexity

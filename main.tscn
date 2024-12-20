@@ -1,24 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://ctvoq5r2nyqne"]
+[gd_scene load_steps=2 format=3 uid="uid://ctvoq5r2nyqne"]
 
-[ext_resource type="PackedScene" uid="uid://cssq77rxkvmx" path="res://player.tscn" id="1_qqtgb"]
 [ext_resource type="PackedScene" uid="uid://btkr5v6rhj8hg" path="res://arena.tscn" id="2_qx7yx"]
-[ext_resource type="PackedScene" uid="uid://pn5tac8vw11n" path="res://dummy_monster.tscn" id="3_qx7yx"]
 
 [node name="main" type="Node2D"]
 
 [node name="Arena" parent="." instance=ExtResource("2_qx7yx")]
-scale = Vector2(1.45118, 2.44)
-
-[node name="Player" parent="." instance=ExtResource("1_qqtgb")]
-position = Vector2(576, 324)
-scale = Vector2(1, 1)
-
-[node name="Camera2D" type="Camera2D" parent="Player"]
-process_mode = 1
-zoom = Vector2(0.8, 0.8)
-position_smoothing_enabled = true
-drag_horizontal_enabled = true
-drag_vertical_enabled = true
-
-[node name="DummyMonster" parent="." instance=ExtResource("3_qx7yx")]
-position = Vector2(800, 324)
+scale = Vector2(2.86915, 2.4325)

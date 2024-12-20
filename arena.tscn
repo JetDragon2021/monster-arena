@@ -1,26 +1,180 @@
-[gd_scene load_steps=2 format=3 uid="uid://btkr5v6rhj8hg"]
+[gd_scene load_steps=9 format=3 uid="uid://btkr5v6rhj8hg"]
+
+[ext_resource type="Script" path="res://arena.gd" id="1_qlwqg"]
+[ext_resource type="Script" path="res://player.gd" id="2_player"]
+[ext_resource type="Script" path="res://dummy_monster.gd" id="3_monster"]
+[ext_resource type="Texture2D" uid="uid://dijw6tku1yt3l" path="res://icon.svg" id="5_monster_texture"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(1152, 64)
+size = Vector2(116.239, 140.885)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(73.5938, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(150, 150)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(206.667, 240.019)
 
 [node name="Arena" type="Node2D"]
+script = ExtResource("1_qlwqg")
 
-[node name="Boundaries" type="StaticBody2D" parent="."]
+[node name="ArenaWalls" type="StaticBody2D" parent="."]
+scale = Vector2(2.64, 2.04)
+collision_mask = 3
 
-[node name="TopWall" type="CollisionShape2D" parent="Boundaries"]
-position = Vector2(576, 0)
+[node name="TopArenaWall" type="CollisionShape2D" parent="ArenaWalls"]
+position = Vector2(593.04, 4.90196)
+scale = Vector2(9.45184, 0.357946)
 shape = SubResource("RectangleShape2D_1")
+debug_color = Color(0.572549, 0, 0.298039, 1)
 
-[node name="BottomWall" type="CollisionShape2D" parent="Boundaries"]
-position = Vector2(576, 648)
+[node name="BottomArenaWall" type="CollisionShape2D" parent="ArenaWalls"]
+position = Vector2(571.591, 647.549)
+scale = Vector2(9.51515, 0.43137)
 shape = SubResource("RectangleShape2D_1")
+debug_color = Color(0.572549, 0, 0.298039, 1)
 
-[node name="LeftWall" type="CollisionShape2D" parent="Boundaries"]
+[node name="LeftArenaWall" type="CollisionShape2D" parent="ArenaWalls"]
 position = Vector2(0, 324)
 rotation = 1.5708
+scale = Vector2(6.29831, 0.4396)
 shape = SubResource("RectangleShape2D_1")
+debug_color = Color(0.572549, 0, 0.298039, 1)
 
-[node name="RightWall" type="CollisionShape2D" parent="Boundaries"]
+[node name="RightArenaWall" type="CollisionShape2D" parent="ArenaWalls"]
 position = Vector2(1152, 324)
 rotation = 1.5708
+scale = Vector2(6.73681, 0.479728)
 shape = SubResource("RectangleShape2D_1")
+debug_color = Color(0.572549, 0, 0.298039, 1)
+
+[node name="TopWallRect" type="ColorRect" parent="ArenaWalls"]
+offset_top = -32.0
+offset_right = 1152.0
+offset_bottom = 32.0
+color = Color(0.576471, 0, 0.192157, 1)
+
+[node name="BottomWallRect" type="ColorRect" parent="ArenaWalls"]
+offset_top = 616.0
+offset_right = 1152.0
+offset_bottom = 680.0
+color = Color(0.576471, 0, 0.192157, 1)
+
+[node name="LeftWallRect" type="ColorRect" parent="ArenaWalls"]
+offset_left = -34.0
+offset_top = -346.0
+offset_right = 30.0
+offset_bottom = 302.0
+rotation = -0.0055052
+scale = Vector2(1, 1.91911)
+color = Color(0.576471, 0, 0.192157, 1)
+
+[node name="RightWallRect" type="ColorRect" parent="ArenaWalls"]
+offset_left = 1126.0
+offset_top = -418.0
+offset_right = 1190.0
+offset_bottom = 230.0
+rotation = 0.00229514
+scale = Vector2(1, 2.03954)
+color = Color(0.574851, 0, 0.193708, 1)
+
+[node name="Player" type="CharacterBody2D" parent="." groups=["player"]]
+position = Vector2(300, 300)
+scale = Vector2(0.63615, 0.42024)
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("2_player")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+texture = ExtResource("5_monster_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+position = Vector2(3.14392, 2.37961)
+scale = Vector2(1.09397, 1.04274)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="AttackArea" type="Area2D" parent="Player"]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/AttackArea"]
+position = Vector2(-0.800012, -3)
+scale = Vector2(2.56, 2.16)
+shape = SubResource("RectangleShape2D_2")
+
+[node name="HealthBar" type="ProgressBar" parent="Player"]
+offset_left = -62.0
+offset_top = -40.0
+offset_right = 62.0
+offset_bottom = -30.0
+value = 100.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="Player/HealthBar"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = -1.0
+offset_right = 124.0
+offset_bottom = 22.0
+text = "100 / 100"
+horizontal_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+process_mode = 1
+scale = Vector2(2.88635, 2.90367)
+zoom = Vector2(0.8, 0.8)
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+
+[node name="DummyMonster" type="CharacterBody2D" parent="." groups=["enemy"]]
+position = Vector2(786, 301)
+scale = Vector2(0.6, 0.474962)
+collision_layer = 4
+collision_mask = 5
+script = ExtResource("3_monster")
+metadata/_edit_group_ = true
+
+[node name="EnemySprite" type="Sprite2D" parent="DummyMonster"]
+texture = ExtResource("5_monster_texture")
+
+[node name="EnemyCollisionShape" type="CollisionShape2D" parent="DummyMonster"]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="EnemyHealthBar" type="ProgressBar" parent="DummyMonster"]
+offset_left = -50.0
+offset_top = -70.0
+offset_right = 50.0
+offset_bottom = -60.0
+value = 100.0
+show_percentage = false
+
+[node name="EnemyHealthLabel" type="Label" parent="DummyMonster/EnemyHealthBar"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = -1.0
+offset_right = 99.0
+offset_bottom = 22.0
+text = "100 / 100"
+horizontal_alignment = 1
+
+[node name="DetectionArea" type="Area2D" parent="DummyMonster"]
+collision_layer = 4
+collision_mask = 2
+
+[node name="DetectionAreaCollisionShape" type="CollisionShape2D" parent="DummyMonster/DetectionArea"]
+scale = Vector2(2, 2)
+shape = SubResource("RectangleShape2D_4")
+
+[node name="AttackArea" type="Area2D" parent="DummyMonster"]
+collision_layer = 4
+collision_mask = 2
+
+[node name="EnemyAttackAreaCollisionShape" type="CollisionShape2D" parent="DummyMonster/AttackArea"]
+position = Vector2(5.00012, 6.10352e-05)
+scale = Vector2(2, 2)
+shape = SubResource("RectangleShape2D_3")
